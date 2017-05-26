@@ -43,7 +43,7 @@ namespace ModifyResearchTime
             foreach (ResearchProjectDef defToModify in defsToModify.Values)
             {
                 float baseCost = BaseResearchDefs[defToModify.defName];
-                if (Math.Abs(rm.GetProgress(defToModify) - (baseCost * oldFactor)) < 0.5f)
+                if (Math.Abs(rm.GetProgress(defToModify) - (baseCost * oldFactor)) < 0.01f)
                 {
                     researchCompleted.Add(defToModify.defName, null);
                 }
@@ -65,6 +65,8 @@ namespace ModifyResearchTime
             {
                 float baseCost = BaseResearchDefs[defToModify.defName];
                 defToModify.baseCost = baseCost * newFactor;
+                if (defToModify.baseCost < 1)
+                    defToModify.baseCost = 1;
 
                 if (researchCompleted.ContainsKey(defToModify.defName))
                 {
