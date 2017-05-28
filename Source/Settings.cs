@@ -1,29 +1,13 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using Verse;
 
 namespace ModifyResearchTime
 {
-    class Settings : Mod
+    public class SettingsController : Mod
     {
-        public const string FLOAT_FORMAT = "####.####";
-        private static string settingsFactor = "1.00";
-
-        public static float SettingsFactor
+        public SettingsController(ModContentPack content) : base(content)
         {
-            get
-            {
-                if (ValidateInput())
-                {
-                    return float.Parse(settingsFactor);
-                }
-                return 1f;
-            }
-        }
-
-        public Settings(ModContentPack content) : base(content)
-        {
-            
+            base.GetSettings<Settings>();
         }
 
         public override string SettingsCategory()
@@ -31,53 +15,53 @@ namespace ModifyResearchTime
             return "ModifyResearchTime".Translate();
         }
 
-        public override void WriteSettings()
-        {
-            base.WriteSettings();
-            Scribe_Values.Look<string>(ref settingsFactor, "ModifyResearchTime.Factor", "1.00", false);
-        }
-
         public override void DoSettingsWindowContents(Rect rect)
         {
-            Rect r = new Rect(0, 60, 600, 85);
-            GUI.BeginGroup(r);
-            r = new Rect(0, 0, 300, 20);
-            GUI.Label(r, "ModifyResearchTime.Factor".Translate() + ":");
-            r = new Rect(320, 0, 280, 20);
-            settingsFactor = GUI.TextField(r, settingsFactor);
+            GUI.BeginGroup(new Rect(0, 60, 600, 200));
+            Text.Font = GameFont.Medium;
+            Widgets.Label(new Rect(0, 0, 300, 40), "ModifyResearchTime.Global".Translate());
+            Text.Font = GameFont.Small;
+            Widgets.Label(new Rect(0, 40, 300, 20), "ModifyResearchTime.Factor".Translate() + ":");
+            Settings.GlobalFactor.AsString = Widgets.TextField(new Rect(320, 40, 100, 20), Settings.GlobalFactor.AsString);
+            if (Widgets.ButtonText(new Rect(320, 65, 100, 20), "ModifyResearchTime.Apply".Translate()))
+            {
+                if (Settings.GlobalFactor.ValidateInput())
+                {
+                    base.GetSettings<Settings>().Write();
+                    Messages.Message("ModifyResearchTime.Global".Translate() + " " + "ModifyResearchTime.ResearchTimesUpdated".Translate(), MessageSound.Benefit);
+                }
+            }
+
             if (Current.Game != null)
             {
-                r = new Rect(320, 25, 200, 25);
-                if (GUI.Button(r, new GUIContent("ModifyResearchTime.Apply".Translate())))
+                Text.Font = GameFont.Medium;
+                Widgets.Label(new Rect(0, 90, 300, 40), "ModifyResearchTime.CurrentGame".Translate());
+                Text.Font = GameFont.Small;
+                Widgets.Label(new Rect(0, 130, 300, 20), "ModifyResearchTime.Factor".Translate() + ":");
+                Settings.GameFactor.AsString = Widgets.TextField(new Rect(320, 130, 100, 20), Settings.GameFactor.AsString);
+                if (Widgets.ButtonText(new Rect(320, 155, 100, 20), "ModifyResearchTime.Apply".Translate()))
                 {
-                    if (ValidateInput())
+                    if (Settings.GameFactor.ValidateInput())
                     {
-                        WorldComp.UpdateFactor(SettingsFactor);
-                        Messages.Message("ModifyResearchTime.ResearchTimesUpdated".Translate(), MessageSound.Benefit);
+                        WorldComp.UpdateFactor(Settings.GameFactor.AsFloat);
+                        Messages.Message("ModifyResearchTime.CurrentGame".Translate() + " " + "ModifyResearchTime.ResearchTimesUpdated".Translate(), MessageSound.Benefit);
                     }
                 }
 
             }
             GUI.EndGroup();
         }
+    }
 
-        private static bool ValidateInput()
+    class Settings : ModSettings
+    {
+        public static readonly FloatInput GlobalFactor = new FloatInput("Global Research Time Factor");
+        public static readonly FloatInput GameFactor = new FloatInput("Game Research Time Factor");
+
+        public override void ExposeData()
         {
-            float f;
-            if (float.TryParse(settingsFactor, out f))
-            {
-                if (f <= 0)
-                {
-                    Messages.Message("Research Time Factor cannot be less than or equal to 0.", MessageSound.RejectInput);
-                    return false;
-                }
-            }
-            else
-            {
-                Messages.Message("Unable to parse Research Time Factor to a number.", MessageSound.RejectInput);
-                return false;
-            }
-            return true;
+            base.ExposeData();
+            Scribe_Values.Look<string>(ref (GlobalFactor.AsString), "ModifyResearchTime.Factor", "1.00", false);
         }
     }
 }

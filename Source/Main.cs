@@ -1,5 +1,4 @@
 ﻿using Harmony;
-using RimWorld;
 using System.Reflection;
 using Verse;
 
@@ -22,17 +21,7 @@ namespace ModifyResearchTime
     {
         static void Postfix()
         {
-            WorldComp.IsNewGame = true;
+            WorldComp.InitializeNewGame();
         }
     }
-
-    /*[HarmonyPatch(typeof(Game), "LoadGame")]
-    static class Patch_Game_LoadGame
-    {
-        static void Postfix()
-        {
-            ResearchTimeUtil.CreateBaseResearchDefs();
-            ResearchTimeUtil.ApplyFactor();
-        }
-    }*/
 }

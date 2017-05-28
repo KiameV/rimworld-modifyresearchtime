@@ -1,57 +1,52 @@
-﻿using System;
-using RimWorld.Planet;
+﻿using RimWorld.Planet;
 using Verse;
-using RimWorld;
 
 namespace ModifyResearchTime
 {
     class WorldComp : WorldComponent
     {
-        private static float gameFactor = Settings.SettingsFactor;
-        private static float oldFactor = Settings.SettingsFactor;
+        private float currentFactor = 1f;
         private static WorldComp Instance;
-        
-        public static bool IsNewGame { get; set; }
 
         public WorldComp(World world) : base(world)
         {
             Instance = this;
         }
 
-        public override void FinalizeInit()
+        public static void InitializeNewGame()
         {
-            base.FinalizeInit();
-
-            if (IsNewGame)
+            if (Instance == null)
             {
-                ResearchTimeUtil.ApplyFactor(1, Settings.SettingsFactor);
+                Log.Error("WorldComp.Instance is null.");
+                return;
             }
+            Settings.GameFactor.Copy(Settings.GlobalFactor);
+            Instance.currentFactor = Settings.GlobalFactor.AsFloat;
+            ResearchTimeUtil.ApplyFactor(1, Instance.currentFactor);
         }
 
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look<float>(ref gameFactor, "ModifyResearchTime.Factor", 1f, false);
-            oldFactor = gameFactor;
+            Scribe_Values.Look<float>(ref this.currentFactor, "ModifyResearchTime.Factor", 1f, false);
+            Settings.GameFactor.AsFloat = this.currentFactor;
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
-                IsNewGame = false;
-                ResearchTimeUtil.ApplyFactor(gameFactor, gameFactor);
+                ResearchTimeUtil.ApplyFactor(currentFactor, currentFactor);
             }
         }
 
-        internal static void UpdateFactor(float settingsFactor)
+        internal static void UpdateFactor(float newFactor)
         {
             if (Instance == null)
             {
                 Log.Error("WorldComp Instance is null.");
                 return;
             }
-            oldFactor = gameFactor;
-            gameFactor = settingsFactor;
-            if (oldFactor != gameFactor)
+            if (Instance.currentFactor != newFactor)
             {
-                ResearchTimeUtil.ApplyFactor(oldFactor, gameFactor);
+                ResearchTimeUtil.ApplyFactor(Instance.currentFactor, newFactor);
+                Instance.currentFactor = newFactor;
             }
         }
     }
