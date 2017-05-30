@@ -9,7 +9,7 @@ namespace ModifyResearchTime
     {
         static Main()
         {
-            var harmony = HarmonyInstance.Create("com.changedresser.rimworld.mod");
+            var harmony = HarmonyInstance.Create("com.modifyresearchtime.rimworld.mod");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
             
             Log.Message("ModifyResearchTime: Adding Harmony Postfix to DefDatabase.ErrorCheckAllDefs");
