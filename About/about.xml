@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-<name>Change Research Speed</name>
-<author>Kiame</author>
-<targetVersion>0.17.1546</targetVersion>
-<description>Change the speed of research both globally and per-save whenever you want.</description>
+	<name>Change Research Speed</name>
+	<author>Kiame Vivacity</author>
+	<url>http://steamcommunity.com/sharedfiles/filedetails/?id=933019589</url>
+	<targetVersion>0.17.1557</targetVersion>
+	<description>Change the speed of research both globally and per-save whenever you want.</description>
 </ModMetaData>
