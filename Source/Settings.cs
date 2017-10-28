@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using RimWorld;
+using UnityEngine;
 using Verse;
 
 namespace ModifyResearchTime
@@ -28,7 +29,7 @@ namespace ModifyResearchTime
                 if (Settings.GlobalFactor.ValidateInput())
                 {
                     base.GetSettings<Settings>().Write();
-                    Messages.Message("ModifyResearchTime.Global".Translate() + " " + "ModifyResearchTime.ResearchTimesUpdated".Translate(), MessageSound.Benefit);
+                    Messages.Message("ModifyResearchTime.Global".Translate() + " " + "ModifyResearchTime.ResearchTimesUpdated".Translate(), MessageTypeDefOf.PositiveEvent);
                 }
             }
 
@@ -44,12 +45,21 @@ namespace ModifyResearchTime
                     if (Settings.GameFactor.ValidateInput())
                     {
                         WorldComp.UpdateFactor(Settings.GameFactor.AsFloat);
-                        Messages.Message("ModifyResearchTime.CurrentGame".Translate() + " " + "ModifyResearchTime.ResearchTimesUpdated".Translate(), MessageSound.Benefit);
+                        Messages.Message("ModifyResearchTime.CurrentGame".Translate() + " " + "ModifyResearchTime.ResearchTimesUpdated".Translate(), MessageTypeDefOf.PositiveEvent);
                     }
                 }
-
             }
+
             GUI.EndGroup();
+
+            Listing_Standard l = new Listing_Standard(GameFont.Small);
+            l.Begin(new Rect(0, 300, 400, 60));
+            l.ColumnWidth = 300;
+            l.CheckboxLabeled(
+                "ModifyResearchTime.AllowTechAdvance".Translate(),
+                ref Settings.AllowTechAdvance,
+                "ModifyResearchTime.AllowTechAdvanceToolTip".Translate());
+            l.End();
         }
     }
 
@@ -57,11 +67,13 @@ namespace ModifyResearchTime
     {
         public static readonly FloatInput GlobalFactor = new FloatInput("Global Research Time Factor");
         public static readonly FloatInput GameFactor = new FloatInput("Game Research Time Factor");
+        public static bool AllowTechAdvance = false;
 
         public override void ExposeData()
         {
             base.ExposeData();
             Scribe_Values.Look<string>(ref (GlobalFactor.AsString), "ModifyResearchTime.Factor", "1.00", false);
+            Scribe_Values.Look<bool>(ref AllowTechAdvance, "ModifyResearchTime.AllowTechAdvance", false, false);
         }
     }
 }

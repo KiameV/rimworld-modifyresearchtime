@@ -15,14 +15,12 @@ namespace ModifyResearchTime
 
         public static void InitializeNewGame()
         {
-            if (Instance == null)
-            {
-                Log.Error("WorldComp.Instance is null.");
-                return;
-            }
             Settings.GameFactor.Copy(Settings.GlobalFactor);
-            Instance.currentFactor = Settings.GlobalFactor.AsFloat;
+            Instance.currentFactor = Settings.GameFactor.AsFloat;
             ResearchTimeUtil.ApplyFactor(1, Instance.currentFactor);
+#if DEBUG
+            Log.Warning("InitializeNewGame: Global: " + Settings.GlobalFactor.AsString + " Game: " + Settings.GameFactor.AsString);
+#endif
         }
 
         public override void ExposeData()
@@ -32,17 +30,12 @@ namespace ModifyResearchTime
             Settings.GameFactor.AsFloat = this.currentFactor;
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
-                ResearchTimeUtil.ApplyFactor(currentFactor, currentFactor);
+                ResearchTimeUtil.ApplyFactor(1, currentFactor);
             }
         }
 
         internal static void UpdateFactor(float newFactor)
         {
-            if (Instance == null)
-            {
-                Log.Error("WorldComp Instance is null.");
-                return;
-            }
             if (Instance.currentFactor != newFactor)
             {
                 ResearchTimeUtil.ApplyFactor(Instance.currentFactor, newFactor);

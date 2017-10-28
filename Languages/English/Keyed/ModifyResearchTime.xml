@@ -1,9 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <LanguageData>
-	<ModifyResearchTime>Modify Research Time</ModifyResearchTime>
+	<ModifyResearchTime>Change Research Time</ModifyResearchTime>
 	<ModifyResearchTime.Global>Global</ModifyResearchTime.Global>
 	<ModifyResearchTime.CurrentGame>Current Game</ModifyResearchTime.CurrentGame>
 	<ModifyResearchTime.Factor>Factor</ModifyResearchTime.Factor>
 	<ModifyResearchTime.Apply>Apply</ModifyResearchTime.Apply>
 	<ModifyResearchTime.ResearchTimesUpdated>Research Times Updated</ModifyResearchTime.ResearchTimesUpdated>
+	<ModifyResearchTime.AllowTechAdvance>Allow Tech Advance</ModifyResearchTime.AllowTechAdvance>
+	<ModifyResearchTime.AllowTechAdvanceToolTip>If the colony has either researched all current technology plus one technology from a future tech level OR the sum of all researched techs is greater than the number of techs to required to acquire the next tech level, the colony's tech level will go to the next level.</ModifyResearchTime.AllowTechAdvanceToolTip>
 </LanguageData>
