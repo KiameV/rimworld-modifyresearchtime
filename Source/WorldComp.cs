@@ -5,19 +5,15 @@ namespace ModifyResearchTime
 {
     class WorldComp : WorldComponent
     {
-        private float currentFactor = 1f;
-        private static WorldComp Instance;
+        public static float CurrentFactor = 1f;
 
-        public WorldComp(World world) : base(world)
-        {
-            Instance = this;
-        }
+        public WorldComp(World world) : base(world) { }
 
         public static void InitializeNewGame()
         {
             Settings.GameFactor.Copy(Settings.GlobalFactor);
-            Instance.currentFactor = Settings.GameFactor.AsFloat;
-            ResearchTimeUtil.ApplyFactor(1, Instance.currentFactor);
+            CurrentFactor = Settings.GameFactor.AsFloat;
+            ResearchTimeUtil.ApplyFactor(CurrentFactor);
 #if DEBUG
             Log.Warning("InitializeNewGame: Global: " + Settings.GlobalFactor.AsString + " Game: " + Settings.GameFactor.AsString);
 #endif
@@ -26,20 +22,21 @@ namespace ModifyResearchTime
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look<float>(ref this.currentFactor, "ModifyResearchTime.Factor", 1f, false);
-            Settings.GameFactor.AsFloat = this.currentFactor;
+            Scribe_Values.Look<float>(ref CurrentFactor, "ModifyResearchTime.Factor", 1f, false);
+            Settings.GameFactor.AsFloat = CurrentFactor;
             if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
-                ResearchTimeUtil.ApplyFactor(1, currentFactor);
+                ResearchTimeUtil.ApplyFactor(CurrentFactor);
+                CurrentFactor = Settings.GameFactor.AsFloat;
             }
         }
 
-        internal static void UpdateFactor(float newFactor)
+        public static void UpdateFactor(float newFactor)
         {
-            if (Instance.currentFactor != newFactor)
+            if (CurrentFactor != newFactor)
             {
-                ResearchTimeUtil.ApplyFactor(Instance.currentFactor, newFactor);
-                Instance.currentFactor = newFactor;
+                ResearchTimeUtil.ApplyFactor(newFactor);
+                CurrentFactor = newFactor;
             }
         }
     }

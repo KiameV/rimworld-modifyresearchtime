@@ -14,8 +14,9 @@ namespace ModifyResearchTime
             var harmony = HarmonyInstance.Create("com.modifyresearchtime.rimworld.mod");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
             
-            Log.Message("ModifyResearchTime: Adding Harmony Postfix to Game.InitNewGame");
-            Log.Message("TechLevelAdvance: Adding Harmony Postfix to ResearchManager.ReapplyAllMods");
+            Log.Message("ChangeResearchTime: Adding Harmony Postfix to Game.InitNewGame");
+            Log.Message("ChangeResearchTime: Adding Harmony Postfix to Root.Shutdown");
+            Log.Message("ChangeResearchTime: Adding Harmony Postfix to ResearchManager.ReapplyAllMods");
         }
     }
 
@@ -24,7 +25,22 @@ namespace ModifyResearchTime
     {
         static void Postfix()
         {
+#if DEBUG
+            Log.Warning("Patch_Game_InitNewGame Postfix");
+#endif
             WorldComp.InitializeNewGame();
+        }
+    }
+
+    [HarmonyPatch(typeof(Root), "Shutdown")]
+    static class Patch_Page_SelectScenario_PreOpen
+    {
+        static void Postfix()
+        {
+#if DEBUG
+            Log.Warning("Patch_Page_SelectScenario_PreOpen Postfix");
+#endif
+            ResearchTimeUtil.ResetResearchFactor();
         }
     }
 
@@ -33,6 +49,10 @@ namespace ModifyResearchTime
     {
         static void Postfix()
         {
+            if (Settings.AllowTechAdvance == false)
+            {
+                return;
+            }
             TechLevel techLevel = Faction.OfPlayer.def.techLevel;
 #if DEBUG
             Log.Warning("Tech Level: " + techLevel);
