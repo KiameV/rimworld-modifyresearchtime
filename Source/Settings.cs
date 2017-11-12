@@ -29,7 +29,7 @@ namespace ModifyResearchTime
                 if (Settings.GlobalFactor.ValidateInput())
                 {
                     base.GetSettings<Settings>().Write();
-                    Messages.Message("ModifyResearchTime.Global".Translate() + " " + "ModifyResearchTime.ResearchTimesUpdated".Translate(), MessageTypeDefOf.PositiveEvent);
+                    Messages.Message("ModifyResearchTime.Global".Translate() + " " + "ModifyResearchTime.ResearchTimesUpdated".Translate(), MessageSound.Benefit);
                 }
             }
 
@@ -45,7 +45,7 @@ namespace ModifyResearchTime
                     if (Settings.GameFactor.ValidateInput())
                     {
                         WorldComp.UpdateFactor(Settings.GameFactor.AsFloat);
-                        Messages.Message("ModifyResearchTime.CurrentGame".Translate() + " " + "ModifyResearchTime.ResearchTimesUpdated".Translate(), MessageTypeDefOf.PositiveEvent);
+                        Messages.Message("ModifyResearchTime.CurrentGame".Translate() + " " + "ModifyResearchTime.ResearchTimesUpdated".Translate(), MessageSound.Benefit);
                     }
                 }
             }

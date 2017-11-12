@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ModMetaData>
-	<name>Change Research Speed - A18</name>
+	<name>Change Research Speed - A17</name>
 	<author>Kiame Vivacity</author>
 	<url>https://ludeon.com/forums/index.php?topic=32854</url>
-	<targetVersion>0.18.0</targetVersion>
+	<targetVersion>0.17.0</targetVersion>
 	<description>Change the speed of research both globally and per-save whenever you want.</description>
 </ModMetaData>

@@ -8,74 +8,72 @@ namespace ModifyResearchTime
 {
     internal static class ResearchTimeUtil
     {
-        public static Dictionary<string, float> BaseResearchDefs { get; set; }
+        private static Dictionary<string, float> baseResearchDefs = null;
 
-        static ResearchTimeUtil()
+        public static void CreateBaseResearchDefs()
         {
-            BaseResearchDefs = null;
-        }
-
-        private static void CreateBaseResearchDefs()
-        {
-            if (BaseResearchDefs == null)
+            if (baseResearchDefs == null)
             {
-                BaseResearchDefs = new Dictionary<string, float>();
+#if DEBUG
+                Log.Warning("Create Base Research Lookup");
+#endif
+                baseResearchDefs = new Dictionary<string, float>();
                 foreach (ResearchProjectDef def in DefDatabase<ResearchProjectDef>.AllDefsListForReading)
                 {
-                    BaseResearchDefs.Add(def.defName, def.baseCost);
+                    baseResearchDefs.Add(def.defName, def.baseCost);
                 }
             }
         }
 
-        public static void ApplyFactor(float oldFactor, float newFactor)
+        public static void ApplyFactor(float factor)
         {
+#if DEBUG
+            Log.Warning("ApplyFactor");
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+#endif
             CreateBaseResearchDefs();
-            Dictionary<string, ResearchProjectDef> defsToModify = new Dictionary<string, ResearchProjectDef>();
             foreach (ResearchProjectDef def in DefDatabase<ResearchProjectDef>.AllDefs)
             {
-                defsToModify.Add(def.defName, def);
+#if DEBUG
+                float orig = def.baseCost;
+                bool finsihed = def.IsFinished;
+#endif
+                if (!def.IsFinished)
+                {
+                    def.baseCost = baseResearchDefs[def.defName] * factor;
+                }
+#if DEBUG
+                //sb.Append(def.defName + " Finished Orig: " + finsihed + " New: " + def.IsFinished + " Base Cost Orig: " + (int)orig + " New: " + (int)def.baseCost);
+#endif
             }
-            
-            ResearchManager rm = Find.ResearchManager;
-            Dictionary<string, ResearchProjectDef> researchCompleted = new Dictionary<string, ResearchProjectDef>();
-            Dictionary<ResearchProjectDef, float> progress = 
-                (Dictionary<ResearchProjectDef, float>)rm.GetType().GetField("progress", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(rm);
-            foreach (ResearchProjectDef defToModify in defsToModify.Values)
+#if DEBUG
+            Log.Warning(sb.ToString());
+#endif
+        }
+
+        public static void ResetResearchFactor()
+        {
+#if DEBUG
+            Log.Warning("ResetResearchFactor");
+            System.Text.StringBuilder sb = new System.Text.StringBuilder();
+#endif
+            if (baseResearchDefs != null)
             {
-                float baseCost = BaseResearchDefs[defToModify.defName];
-                if (Math.Abs(rm.GetProgress(defToModify) - (baseCost * oldFactor)) < 0.01f)
+                foreach (ResearchProjectDef def in DefDatabase<ResearchProjectDef>.AllDefs)
                 {
-                    researchCompleted.Add(defToModify.defName, null);
-                }
-                else
-                {
-                    float p;
-                    if (progress.TryGetValue(defToModify, out p))
-                    {
-                        if (p > 0)
-                        {
-                            p = (p / oldFactor) * newFactor;
-                            progress[defToModify] = p;
-                        }
-                    }
+#if DEBUG
+                    float orig = def.baseCost;
+                    bool finsihed = def.IsFinished;
+#endif
+                    def.baseCost = baseResearchDefs[def.defName];
+#if DEBUG
+                    //sb.Append(def.defName + " Finished Orig: " + finsihed + " New: " + def.IsFinished + " Base Cost Orig: " + (int)orig + " New: " + (int)def.baseCost);
+#endif
                 }
             }
-
-            foreach (ResearchProjectDef defToModify in defsToModify.Values)
-            {
-                float baseCost = BaseResearchDefs[defToModify.defName];
-                defToModify.baseCost = baseCost * newFactor;
-                if (defToModify.baseCost < 1)
-                    defToModify.baseCost = 1;
-
-                if (researchCompleted.ContainsKey(defToModify.defName))
-                {
-                    rm.InstantFinish(defToModify, false);
-                }
-            }
-
-            defsToModify.Clear();
-            researchCompleted.Clear();
+#if DEBUG
+            Log.Warning(sb.ToString());
+#endif
         }
     }
 }
