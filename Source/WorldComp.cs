@@ -1,4 +1,5 @@
 ﻿using RimWorld.Planet;
+using System.Collections.Generic;
 using Verse;
 
 namespace ModifyResearchTime
@@ -19,15 +20,66 @@ namespace ModifyResearchTime
 #endif
         }
 
+        private static Dictionary<string, bool> completedLookup = null;
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look<float>(ref CurrentFactor, "ModifyResearchTime.Factor", 1f, false);
-            Settings.GameFactor.AsFloat = CurrentFactor;
-            if (Scribe.mode == LoadSaveMode.PostLoadInit)
+
+            List<string> completed = new List<string>();
+
+            if (Scribe.mode == LoadSaveMode.Saving)
             {
+                // Populated the completed research
+                foreach (ResearchProjectDef def in DefDatabase<ResearchProjectDef>.AllDefs)
+                {
+                    if (def.IsFinished)
+                    {
+                        completed.Add(def.defName);
+                    }
+                }
+            }
+#if DEBUG
+            Log.Warning(Scribe.mode + " Pre " + completed.Count);
+#endif
+
+            Scribe_Values.Look<float>(ref CurrentFactor, "ModifyResearchTime.Factor", 1f, false);
+            Scribe_Collections.Look(ref completed, "ModifyResearchTime.Completed", LookMode.Value);
+
+#if DEBUG
+            Log.Warning(Scribe.mode + " Post " + completed.Count);
+#endif
+
+            Settings.GameFactor.AsFloat = CurrentFactor;
+
+            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            {
+                // Create the completed research lookup
+                completedLookup = new Dictionary<string, bool>();
+                foreach (string c in completed)
+                {
+                    completedLookup[c] = true;
+                }
+                completed.Clear();
+                completed = null;
+            }
+            else if (Scribe.mode == LoadSaveMode.PostLoadInit)
+            {
+                // Use the completed research lookup to make the completed research as finished
                 ResearchTimeUtil.ApplyFactor(CurrentFactor);
                 CurrentFactor = Settings.GameFactor.AsFloat;
+
+                foreach (ResearchProjectDef def in DefDatabase<ResearchProjectDef>.AllDefs)
+                {
+                    if (completedLookup.ContainsKey(def.defName))
+                    {
+#if DEBUG
+                        Log.Warning("Completed: " + def.defName);
+#endif
+                        Find.ResearchManager.InstantFinish(def, false);
+                    }
+                }
+                completedLookup.Clear();
+                completedLookup = null;
             }
         }
 
