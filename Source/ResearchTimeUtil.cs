@@ -31,16 +31,23 @@ namespace ModifyResearchTime
             Log.Warning("ApplyFactor");
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
 #endif
+            Dictionary<ResearchProjectDef, float> progress =
+                (Dictionary<ResearchProjectDef, float>)Find.ResearchManager.GetType().GetField("progress", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Find.ResearchManager);
+
             CreateBaseResearchDefs();
+            ResetResearchFactor();
+
             foreach (ResearchProjectDef def in DefDatabase<ResearchProjectDef>.AllDefs)
             {
 #if DEBUG
                 float orig = def.baseCost;
                 bool finsihed = def.IsFinished;
 #endif
-                bool isFinished = def.IsFinished;
-                def.baseCost = baseResearchDefs[def.defName] * factor;
-                if (isFinished && !def.IsFinished)
+                bool finished = def.IsFinished;
+                float p = progress[def];
+                progress[def] = p * factor;
+                def.baseCost *= factor;
+                if (finished && !def.IsFinished)
                 {
                     Find.ResearchManager.InstantFinish(def, false);
                 }
