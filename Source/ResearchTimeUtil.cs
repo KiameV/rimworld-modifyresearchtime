@@ -38,7 +38,12 @@ namespace ModifyResearchTime
                 float orig = def.baseCost;
                 bool finsihed = def.IsFinished;
 #endif
+                bool isFinished = def.IsFinished;
                 def.baseCost = baseResearchDefs[def.defName] * factor;
+                if (isFinished && !def.IsFinished)
+                {
+                    Find.ResearchManager.InstantFinish(def, false);
+                }
 #if DEBUG
                 //sb.Append(def.defName + " Finished Orig: " + finsihed + " New: " + def.IsFinished + " Base Cost Orig: " + (int)orig + " New: " + (int)def.baseCost);
 #endif
