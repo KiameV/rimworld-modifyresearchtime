@@ -38,10 +38,7 @@ namespace ModifyResearchTime
                 float orig = def.baseCost;
                 bool finsihed = def.IsFinished;
 #endif
-                if (!def.IsFinished)
-                {
-                    def.baseCost = baseResearchDefs[def.defName] * factor;
-                }
+                def.baseCost = baseResearchDefs[def.defName] * factor;
 #if DEBUG
                 //sb.Append(def.defName + " Finished Orig: " + finsihed + " New: " + def.IsFinished + " Base Cost Orig: " + (int)orig + " New: " + (int)def.baseCost);
 #endif
