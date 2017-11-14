@@ -35,6 +35,8 @@ namespace ModifyResearchTime
                 (Dictionary<ResearchProjectDef, float>)Find.ResearchManager.GetType().GetField("progress", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Find.ResearchManager);
 
             CreateBaseResearchDefs();
+            ResetResearchFactor();
+
             foreach (ResearchProjectDef def in DefDatabase<ResearchProjectDef>.AllDefs)
             {
 #if DEBUG
