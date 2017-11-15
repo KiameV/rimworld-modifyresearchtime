@@ -14,7 +14,7 @@ namespace ModifyResearchTime
         {
             Settings.GameFactor.Copy(Settings.GlobalFactor);
             CurrentFactor = Settings.GameFactor.AsFloat;
-            ResearchTimeUtil.ApplyFactor(CurrentFactor);
+            ResearchTimeUtil.ApplyFactor(CurrentFactor, true);
 #if DEBUG
             Log.Warning("InitializeNewGame: Global: " + Settings.GlobalFactor.AsString + " Game: " + Settings.GameFactor.AsString);
 #endif
@@ -43,7 +43,14 @@ namespace ModifyResearchTime
 #endif
 
             Scribe_Values.Look<float>(ref CurrentFactor, "ModifyResearchTime.Factor", 1f, false);
-            Scribe_Collections.Look(ref completed, "ModifyResearchTime.Completed", LookMode.Value);
+            try
+            {
+                Scribe_Collections.Look(ref completed, "ModifyResearchTime.Completed", LookMode.Value);
+            }
+            catch
+            {
+                completed = null;
+            }
 
 #if DEBUG
             Log.Warning(Scribe.mode + " Post " + completed.Count);
@@ -51,7 +58,7 @@ namespace ModifyResearchTime
 
             Settings.GameFactor.AsFloat = CurrentFactor;
 
-            if (Scribe.mode == LoadSaveMode.LoadingVars)
+            if (Scribe.mode == LoadSaveMode.LoadingVars && completed != null)
             {
                 // Create the completed research lookup
                 completedLookup = new Dictionary<string, bool>();
@@ -66,7 +73,7 @@ namespace ModifyResearchTime
             {
                 // Use the completed research lookup to make the completed research as finished
                 CurrentFactor = Settings.GameFactor.AsFloat;
-                ResearchTimeUtil.ApplyFactor(CurrentFactor);
+                ResearchTimeUtil.ApplyFactor(CurrentFactor, false);
 
                 foreach (ResearchProjectDef def in DefDatabase<ResearchProjectDef>.AllDefs)
                 {
@@ -87,7 +94,7 @@ namespace ModifyResearchTime
         {
             if (CurrentFactor != newFactor)
             {
-                ResearchTimeUtil.ApplyFactor(newFactor);
+                ResearchTimeUtil.ApplyFactor(newFactor, true, CurrentFactor);
                 CurrentFactor = newFactor;
             }
         }
