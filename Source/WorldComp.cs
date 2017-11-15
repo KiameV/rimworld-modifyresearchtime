@@ -65,8 +65,8 @@ namespace ModifyResearchTime
             else if (Scribe.mode == LoadSaveMode.PostLoadInit)
             {
                 // Use the completed research lookup to make the completed research as finished
-                ResearchTimeUtil.ApplyFactor(CurrentFactor);
                 CurrentFactor = Settings.GameFactor.AsFloat;
+                ResearchTimeUtil.ApplyFactor(CurrentFactor);
 
                 foreach (ResearchProjectDef def in DefDatabase<ResearchProjectDef>.AllDefs)
                 {
