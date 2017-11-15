@@ -25,7 +25,7 @@ namespace ModifyResearchTime
             }
         }
 
-        public static void ApplyFactor(float factor)
+        public static void ApplyFactor(float factor, bool applyToProgress, float oldFactor = 1)
         {
 #if DEBUG
             Log.Warning("ApplyFactor");
@@ -33,7 +33,7 @@ namespace ModifyResearchTime
 #endif
             if (factor < 0.01)
             {
-                Log.Warning("Limiting research factor to 0.01.");
+                Log.Warning("Limiting research factor to 0.01");
                 factor = 0.01f;
             }
 
@@ -49,8 +49,15 @@ namespace ModifyResearchTime
                 float orig = def.baseCost;
                 bool finsihed = def.IsFinished;
 #endif
-                float p = progress[def];
-                progress[def] = p * factor;
+                if (applyToProgress)
+                {
+                    float p;
+                    if (progress.TryGetValue(def, out p))
+                    {
+                        p /= oldFactor;
+                        progress[def] = p * factor;
+                    }
+                }
                 def.baseCost *= factor;
 #if DEBUG
                 //sb.Append(def.defName + " Finished Orig: " + finsihed + " New: " + def.IsFinished + " Base Cost Orig: " + (int)orig + " New: " + (int)def.baseCost);
@@ -75,7 +82,15 @@ namespace ModifyResearchTime
                     float orig = def.baseCost;
                     bool finsihed = def.IsFinished;
 #endif
-                    def.baseCost = baseResearchDefs[def.defName];
+                    float value;
+                    if (baseResearchDefs.TryGetValue(def.defName, out value))
+                    {
+                        def.baseCost = value;
+                    }
+                    else
+                    {
+                        baseResearchDefs[def.defName] = value;
+                    }
 #if DEBUG
                     //sb.Append(def.defName + " Finished Orig: " + finsihed + " New: " + def.IsFinished + " Base Cost Orig: " + (int)orig + " New: " + (int)def.baseCost);
 #endif
