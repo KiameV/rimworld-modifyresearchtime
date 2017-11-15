@@ -31,6 +31,12 @@ namespace ModifyResearchTime
             Log.Warning("ApplyFactor");
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
 #endif
+            if (factor < 0.01)
+            {
+                Log.Warning("Limiting research factor to 0.01.");
+                factor = 0.01f;
+            }
+
             Dictionary<ResearchProjectDef, float> progress =
                 (Dictionary<ResearchProjectDef, float>)Find.ResearchManager.GetType().GetField("progress", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Find.ResearchManager);
 
@@ -43,14 +49,9 @@ namespace ModifyResearchTime
                 float orig = def.baseCost;
                 bool finsihed = def.IsFinished;
 #endif
-                bool finished = def.IsFinished;
                 float p = progress[def];
                 progress[def] = p * factor;
                 def.baseCost *= factor;
-                if (finished && !def.IsFinished)
-                {
-                    Find.ResearchManager.InstantFinish(def, false);
-                }
 #if DEBUG
                 //sb.Append(def.defName + " Finished Orig: " + finsihed + " New: " + def.IsFinished + " Base Cost Orig: " + (int)orig + " New: " + (int)def.baseCost);
 #endif

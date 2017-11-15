@@ -66,7 +66,6 @@ namespace ModifyResearchTime
             {
                 // Use the completed research lookup to make the completed research as finished
                 ResearchTimeUtil.ApplyFactor(CurrentFactor);
-                CurrentFactor = Settings.GameFactor.AsFloat;
 
                 foreach (ResearchProjectDef def in DefDatabase<ResearchProjectDef>.AllDefs)
                 {
