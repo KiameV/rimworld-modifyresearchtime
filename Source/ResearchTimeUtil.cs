@@ -31,6 +31,12 @@ namespace ModifyResearchTime
             Log.Warning("ApplyFactor");
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
 #endif
+            if (factor < 0.01)
+            {
+                Log.Warning("Limiting research factor to 0.01");
+                factor = 0.01f;
+            }
+
             Dictionary<ResearchProjectDef, float> progress =
                 (Dictionary<ResearchProjectDef, float>)Find.ResearchManager.GetType().GetField("progress", BindingFlags.NonPublic | BindingFlags.Instance).GetValue(Find.ResearchManager);
 
