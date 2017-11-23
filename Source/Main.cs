@@ -23,7 +23,7 @@ namespace ModifyResearchTime
     [HarmonyPatch(typeof(Game), "InitNewGame")]
     static class Patch_Game_InitNewGame
     {
-        static void Postfix()
+        static void Prefix()
         {
 #if DEBUG
             Log.Warning("Patch_Game_InitNewGame Postfix");
