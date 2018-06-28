@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using Verse;
 
-namespace ModifyResearchTime
+namespace ChangeResearchSpeed
 {
     internal static class ResearchTimeUtil
     {

@@ -1,7 +1,7 @@
 ﻿using RimWorld;
 using Verse;
 
-namespace ModifyResearchTime
+namespace ChangeResearchSpeed
 {
     class FloatInput
     {

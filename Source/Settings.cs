@@ -2,7 +2,7 @@
 using UnityEngine;
 using Verse;
 
-namespace ModifyResearchTime
+namespace ChangeResearchSpeed
 {
     public class SettingsController : Mod
     {
@@ -18,39 +18,39 @@ namespace ModifyResearchTime
 
         public override string SettingsCategory()
         {
-            return "ModifyResearchTime".Translate();
+            return "ChangeResearchSpeed".Translate();
         }
 
         public override void DoSettingsWindowContents(Rect rect)
         {
             GUI.BeginGroup(new Rect(0, 60, 600, 200));
             Text.Font = GameFont.Medium;
-            Widgets.Label(new Rect(0, 0, 300, 40), "ModifyResearchTime.Global".Translate());
+            Widgets.Label(new Rect(0, 0, 300, 40), "ChangeResearchSpeed.Global".Translate());
             Text.Font = GameFont.Small;
-            Widgets.Label(new Rect(0, 40, 300, 20), "ModifyResearchTime.Factor".Translate() + ":");
+            Widgets.Label(new Rect(0, 40, 300, 20), "ChangeResearchSpeed.Factor".Translate() + ":");
             Settings.GlobalFactor.AsString = Widgets.TextField(new Rect(320, 40, 100, 20), Settings.GlobalFactor.AsString);
-            if (Widgets.ButtonText(new Rect(320, 65, 100, 20), "ModifyResearchTime.Apply".Translate()))
+            if (Widgets.ButtonText(new Rect(320, 65, 100, 20), "ChangeResearchSpeed.Apply".Translate()))
             {
                 if (Settings.GlobalFactor.ValidateInput())
                 {
                     base.GetSettings<Settings>().Write();
-                    Messages.Message("ModifyResearchTime.Global".Translate() + " " + "ModifyResearchTime.ResearchTimesUpdated".Translate(), MessageTypeDefOf.PositiveEvent);
+                    Messages.Message("ChangeResearchSpeed.Global".Translate() + " " + "ChangeResearchSpeed.ResearchTimesUpdated".Translate(), MessageTypeDefOf.PositiveEvent);
                 }
             }
 
             if (Current.Game != null)
             {
                 Text.Font = GameFont.Medium;
-                Widgets.Label(new Rect(0, 90, 300, 40), "ModifyResearchTime.CurrentGame".Translate());
+                Widgets.Label(new Rect(0, 90, 300, 40), "ChangeResearchSpeed.CurrentGame".Translate());
                 Text.Font = GameFont.Small;
-                Widgets.Label(new Rect(0, 130, 300, 20), "ModifyResearchTime.Factor".Translate() + ":");
+                Widgets.Label(new Rect(0, 130, 300, 20), "ChangeResearchSpeed.Factor".Translate() + ":");
                 Settings.GameFactor.AsString = Widgets.TextField(new Rect(320, 130, 100, 20), Settings.GameFactor.AsString);
-                if (Widgets.ButtonText(new Rect(320, 155, 100, 20), "ModifyResearchTime.Apply".Translate()))
+                if (Widgets.ButtonText(new Rect(320, 155, 100, 20), "ChangeResearchSpeed.Apply".Translate()))
                 {
                     if (Settings.GameFactor.ValidateInput())
                     {
                         WorldComp.UpdateFactor(Settings.GameFactor.AsFloat);
-                        Messages.Message("ModifyResearchTime.CurrentGame".Translate() + " " + "ModifyResearchTime.ResearchTimesUpdated".Translate(), MessageTypeDefOf.PositiveEvent);
+                        Messages.Message("ChangeResearchSpeed.CurrentGame".Translate() + " " + "ChangeResearchSpeed.ResearchTimesUpdated".Translate(), MessageTypeDefOf.PositiveEvent);
                     }
                 }
             }
@@ -61,46 +61,46 @@ namespace ModifyResearchTime
             l.Begin(new Rect(0, 300, 400, 300));
             l.ColumnWidth = 300;
             l.CheckboxLabeled(
-                "ModifyResearchTime.AllowTechAdvance".Translate(),
+                "ChangeResearchSpeed.AllowTechAdvance".Translate(),
                 ref Settings.AllowTechAdvance,
-                "ModifyResearchTime.AllowTechAdvanceToolTip".Translate());
+                "ChangeResearchSpeed.AllowTechAdvanceToolTip".Translate());
             if (Settings.AllowTechAdvance)
             {
-                l.CheckboxLabeled("ModifyResearchTime.StaticNumberResearchPerTier".Translate(), ref Settings.StaticNumberResearchPerTier);
+                l.CheckboxLabeled("ChangeResearchSpeed.StaticNumberResearchPerTier".Translate(), ref Settings.StaticNumberResearchPerTier);
                 if (Settings.StaticNumberResearchPerTier)
                 {
-                    neolithicInput = l.TextEntryLabeled("ModifyResearchTime.NeolithicNeeded".Translate() + ":  ", neolithicInput);
-                    medievalInput = l.TextEntryLabeled("ModifyResearchTime.MedievalNeeded".Translate() + ":  ", medievalInput);
-                    industrialInput = l.TextEntryLabeled("ModifyResearchTime.IndustrialNeeded".Translate() + ":  ", industrialInput);
-                    spacerInput = l.TextEntryLabeled("ModifyResearchTime.SpacerNeeded".Translate() + ":  ", spacerInput);
+                    neolithicInput = l.TextEntryLabeled("ChangeResearchSpeed.NeolithicNeeded".Translate() + ":  ", neolithicInput);
+                    medievalInput = l.TextEntryLabeled("ChangeResearchSpeed.MedievalNeeded".Translate() + ":  ", medievalInput);
+                    industrialInput = l.TextEntryLabeled("ChangeResearchSpeed.IndustrialNeeded".Translate() + ":  ", industrialInput);
+                    spacerInput = l.TextEntryLabeled("ChangeResearchSpeed.SpacerNeeded".Translate() + ":  ", spacerInput);
                 }
                 Rect c = l.GetRect(32f);
                 if (Widgets.ButtonText(new Rect(c.xMin, c.yMin, 100, c.height), "Confirm".Translate()))
                 {
                     if (!int.TryParse(neolithicInput, out Settings.NeolithicNeeded))
                     {
-                        Messages.Message("ModifyResearchTime.InvalidNeolithicInput".Translate(), MessageTypeDefOf.RejectInput);
+                        Messages.Message("ChangeResearchSpeed.InvalidNeolithicInput".Translate(), MessageTypeDefOf.RejectInput);
                         return;
                     }
                     if (!int.TryParse(medievalInput, out Settings.MedievalNeeded))
                     {
-                        Messages.Message("ModifyResearchTime.InvalidMedievalInput".Translate(), MessageTypeDefOf.RejectInput);
+                        Messages.Message("ChangeResearchSpeed.InvalidMedievalInput".Translate(), MessageTypeDefOf.RejectInput);
                         return;
                     }
                     if (!int.TryParse(industrialInput, out Settings.IndustrialNeeded))
                     {
-                        Messages.Message("ModifyResearchTime.InvalidIndustrialInput".Translate(), MessageTypeDefOf.RejectInput);
+                        Messages.Message("ChangeResearchSpeed.InvalidIndustrialInput".Translate(), MessageTypeDefOf.RejectInput);
                         return;
                     }
                     if (!int.TryParse(spacerInput, out Settings.SpacerNeeded))
                     {
-                        Messages.Message("ModifyResearchTime.InvalidSpacerInput".Translate(), MessageTypeDefOf.RejectInput);
+                        Messages.Message("ChangeResearchSpeed.InvalidSpacerInput".Translate(), MessageTypeDefOf.RejectInput);
                         return;
                     }
 
-                    Messages.Message("ModifyResearchTime.ResearchNeededSet".Translate(), MessageTypeDefOf.PositiveEvent);
+                    Messages.Message("ChangeResearchSpeed.ResearchNeededSet".Translate(), MessageTypeDefOf.PositiveEvent);
                 }
-                if (Widgets.ButtonText(new Rect(c.xMax - 100, c.yMin, 100, c.height), "ModifyResearchTime.Default".Translate()))
+                if (Widgets.ButtonText(new Rect(c.xMax - 100, c.yMin, 100, c.height), "ChangeResearchSpeed.Default".Translate()))
                 {
                     Settings.NeolithicNeeded = Settings.DEFAULT_NEOLITHIC_NEEDED;
                     Settings.MedievalNeeded = Settings.DEFAULT_MEDIEVAL_NEEDED;
@@ -112,7 +112,7 @@ namespace ModifyResearchTime
                     industrialInput = Settings.IndustrialNeeded.ToString();
                     spacerInput = Settings.SpacerNeeded.ToString();
 
-                    Messages.Message("ModifyResearchTime.ResearchNeededDefaulted".Translate(), MessageTypeDefOf.PositiveEvent);
+                    Messages.Message("ChangeResearchSpeed.ResearchNeededDefaulted".Translate(), MessageTypeDefOf.PositiveEvent);
                 }
             }
             l.End();
@@ -121,10 +121,10 @@ namespace ModifyResearchTime
 
     class Settings : ModSettings
     {
-        public const int DEFAULT_NEOLITHIC_NEEDED = 7;
-        public const int DEFAULT_MEDIEVAL_NEEDED = 14;
-        public const int DEFAULT_INDUSTRIAL_NEEDED = 51;
-        public const int DEFAULT_SPACER_NEEDED = 57;
+        public const int DEFAULT_NEOLITHIC_NEEDED = 10;
+        public const int DEFAULT_MEDIEVAL_NEEDED = 18;
+        public const int DEFAULT_INDUSTRIAL_NEEDED = 66;
+        public const int DEFAULT_SPACER_NEEDED = 76;
 
         public static int NeolithicNeeded = DEFAULT_NEOLITHIC_NEEDED;
         public static int MedievalNeeded = DEFAULT_MEDIEVAL_NEEDED;
@@ -140,13 +140,13 @@ namespace ModifyResearchTime
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look<string>(ref (GlobalFactor.AsString), "ModifyResearchTime.Factor", "1.00", false);
-            Scribe_Values.Look<bool>(ref AllowTechAdvance, "ModifyResearchTime.AllowTechAdvance", false, false);
-            Scribe_Values.Look<bool>(ref StaticNumberResearchPerTier, "ModifyResearchTime.StaticNumberResearchPerTier", false, false);
-            Scribe_Values.Look<int>(ref NeolithicNeeded, "ModifyResearchTime.NeolithicNeeded", DEFAULT_NEOLITHIC_NEEDED, false);
-            Scribe_Values.Look<int>(ref MedievalNeeded, "ModifyResearchTime.MedievalNeeded", DEFAULT_MEDIEVAL_NEEDED, false);
-            Scribe_Values.Look<int>(ref IndustrialNeeded, "ModifyResearchTime.IndustrialNeeded", DEFAULT_INDUSTRIAL_NEEDED, false);
-            Scribe_Values.Look<int>(ref SpacerNeeded, "ModifyResearchTime.SpacerNeeded", DEFAULT_SPACER_NEEDED, false);
+            Scribe_Values.Look<string>(ref (GlobalFactor.AsString), "ChangeResearchSpeed.Factor", "1.00", false);
+            Scribe_Values.Look<bool>(ref AllowTechAdvance, "ChangeResearchSpeed.AllowTechAdvance", false, false);
+            Scribe_Values.Look<bool>(ref StaticNumberResearchPerTier, "ChangeResearchSpeed.StaticNumberResearchPerTier", false, false);
+            Scribe_Values.Look<int>(ref NeolithicNeeded, "ChangeResearchSpeed.NeolithicNeeded", DEFAULT_NEOLITHIC_NEEDED, false);
+            Scribe_Values.Look<int>(ref MedievalNeeded, "ChangeResearchSpeed.MedievalNeeded", DEFAULT_MEDIEVAL_NEEDED, false);
+            Scribe_Values.Look<int>(ref IndustrialNeeded, "ChangeResearchSpeed.IndustrialNeeded", DEFAULT_INDUSTRIAL_NEEDED, false);
+            Scribe_Values.Look<int>(ref SpacerNeeded, "ChangeResearchSpeed.SpacerNeeded", DEFAULT_SPACER_NEEDED, false);
         }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Verse;
 
-namespace ModifyResearchTime
+namespace ChangeResearchSpeed
 {
     class WorldComp : WorldComponent
     {

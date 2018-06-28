@@ -1,22 +1,24 @@
 ﻿using Harmony;
 using RimWorld;
+using System;
 using System.Reflection;
-using System.Text;
 using Verse;
 
-namespace ModifyResearchTime
+namespace ChangeResearchSpeed
 {
     [StaticConstructorOnStartup]
-    class Main
+    class HarmonyPatches
     {
-        static Main()
+        static HarmonyPatches()
         {
             var harmony = HarmonyInstance.Create("com.modifyresearchtime.rimworld.mod");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
-            
-            Log.Message("ChangeResearchTime: Adding Harmony Postfix to Game.InitNewGame");
-            Log.Message("ChangeResearchTime: Adding Harmony Postfix to Root.Shutdown");
-            Log.Message("ChangeResearchTime: Adding Harmony Postfix to ResearchManager.ReapplyAllMods");
+
+            Log.Message(
+                "ChangeResearchSpeed Harmony Patches:" + Environment.NewLine +
+                "    Game.InitNewGame" + Environment.NewLine +
+                "    Root.Shutdown" + Environment.NewLine +
+                "    ResearchManager.ReapplyAllMods");
         }
     }
 
