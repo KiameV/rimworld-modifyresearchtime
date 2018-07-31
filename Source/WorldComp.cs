@@ -82,7 +82,7 @@ namespace ChangeResearchSpeed
 #if DEBUG
                         Log.Warning("Completed: " + def.defName);
 #endif
-                        Find.ResearchManager.InstantFinish(def, false);
+                        Find.ResearchManager.FinishProject(def, false);
                     }
                 }
                 completedLookup.Clear();
