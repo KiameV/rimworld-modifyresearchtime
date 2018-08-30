@@ -1,8 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ModSyncNinjaData>
-  <ID>7f8e39f3-f017-4604-804e-3733fdcef493</ID>
   <ModName>Change Research Speed</ModName>
-  <Version>1.0.0.2</Version>
+  <Version>0.19.0.1</Version>
   <SaveBreaking>False</SaveBreaking>
   <Host name="Github">
     <Owner>KiameV</Owner>
