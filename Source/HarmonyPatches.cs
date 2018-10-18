@@ -74,6 +74,7 @@ namespace ChangeResearchSpeed
                     //    ++finishedFuture;
                 }
                 
+
                 if (def.techLevel <= currentTechLevel)
                 {
                     ++totalCurrentAndPast;
@@ -113,12 +114,15 @@ namespace ChangeResearchSpeed
             if ((useStatisPerTier && neededTechsToAdvance < finishedResearch) || 
                 (!useStatisPerTier && totalCurrentAndPast + 1 < finishedResearch))
             {
-                if (Scribe.mode == LoadSaveMode.Inactive)
+                if (Faction.OfPlayer.def.techLevel < TechLevel.Spacer)
                 {
-                    // Only display this message is not loading
-                    Messages.Message("Advancing Tech Level from [" + currentTechLevel.ToString() + "] to [" + (currentTechLevel + 1).ToString() + "].", MessageTypeDefOf.PositiveEvent);
+                    if (Scribe.mode == LoadSaveMode.Inactive)
+                    {
+                        // Only display this message is not loading
+                        Messages.Message("Advancing Tech Level from [" + currentTechLevel.ToString() + "] to [" + (currentTechLevel + 1).ToString() + "].", MessageTypeDefOf.PositiveEvent);
+                    }
+                    Faction.OfPlayer.def.techLevel = currentTechLevel + 1;
                 }
-                Faction.OfPlayer.def.techLevel = currentTechLevel + 1;
             }
             else
             {
