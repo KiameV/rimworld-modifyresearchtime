@@ -22,6 +22,8 @@
 	
 	<ChangeResearchSpeed.ResearchNeededSet>Research needed per tech teir has been set</ChangeResearchSpeed.ResearchNeededSet>
 	<ChangeResearchSpeed.ResearchNeededDefaulted>Research needed per tech teir has been reset to default</ChangeResearchSpeed.ResearchNeededDefaulted>
+	<ChangeResearchSpeed.ChangeBaseCosts>Change base costs</ChangeResearchSpeed.ChangeBaseCosts>
+	<ChangeResearchSpeed.ChangeBaseCostsToolTip>Allows to set specific base cost for each research, value can't be lower than 100</ChangeResearchSpeed.ChangeBaseCostsToolTip>
 	
 	<ChangeResearchSpeed.Default>Default</ChangeResearchSpeed.Default>
 </LanguageData>

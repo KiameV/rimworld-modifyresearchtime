@@ -1,6 +1,7 @@
 ﻿using RimWorld;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using Verse;
 
@@ -68,7 +69,44 @@ namespace ChangeResearchSpeed
 #endif
         }
 
-        public static void ResetResearchFactor()
+        public static bool ResearchBaseCostsExists()
+        {
+            return baseResearchDefs != null;
+        }
+
+
+        public static Dictionary<string, float> GetResearchBaseCosts()
+        {
+            CreateBaseResearchDefs();
+            return baseResearchDefs;
+        }
+        public static ResearchProjectDef GetResearchDef(string researchDefName)
+        {
+            return DefDatabase<ResearchProjectDef>.AllDefs.FirstOrDefault(x => x.defName == researchDefName);
+        }
+
+        public static void ChangeBaseCost(ResearchProjectDef def, float newCost)
+        {
+            if (def != null)
+            {
+                if (Current.Game != null && Find.ResearchManager != null)
+                {
+                    var field = Find.ResearchManager.GetType().GetField("progress", BindingFlags.NonPublic | BindingFlags.Instance);
+                    if (field != null)
+                    {
+                        Dictionary<ResearchProjectDef, float> progress = (Dictionary<ResearchProjectDef, float>) field.GetValue(Find.ResearchManager);
+                        float p;
+                        if (progress != null && progress.TryGetValue(def, out p))
+                        {
+                            progress[def] = p * (newCost / def.baseCost);
+                        }
+                    }
+                }
+                def.baseCost = newCost;
+            }
+        }
+
+		public static void ResetResearchFactor()
         {
 #if DEBUG
             Log.Warning("ResetResearchFactor");

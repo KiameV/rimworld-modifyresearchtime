@@ -3,6 +3,6 @@
 	<name>[KV] Change Research Speed - 1.0</name>
 	<author>Kiame Vivacity</author>
 	<url>https://ludeon.com/forums/index.php?topic=32854</url>
-	<targetVersion>1.0.0</targetVersion>
+	<supportedVersions><li>1.0</li></supportedVersions>
 	<description>Change the speed of research both globally and per-save whenever you want.</description>
 </ModMetaData>
