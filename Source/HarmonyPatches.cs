@@ -51,58 +51,54 @@ namespace ChangeResearchSpeed
     {
         static void Postfix()
         {
-            if (Settings.AllowTechAdvance == false)
+            if (Settings.AllowTechAdvance == true)
             {
-                return;
-            }
 
-            TechLevel currentTechLevel = Faction.OfPlayer.def.techLevel;
+                TechLevel currentTechLevel = Faction.OfPlayer.def.techLevel;
 #if DEBUG
-            Log.Warning("Tech Level: " + techLevel);
+            Log.Warning("Tech Level: " + currentTechLevel);
 #endif
-            int totalCurrentAndPast = 0;
-            int finishedResearch = 0;
+                int totalCurrentAndPast = 0;
+                int finishedResearch = 0;
 
-            foreach (ResearchProjectDef def in DefDatabase<ResearchProjectDef>.AllDefs)
-            {
-                if (def.IsFinished)
+                foreach (ResearchProjectDef def in DefDatabase<ResearchProjectDef>.AllDefs)
                 {
-                    ++finishedResearch;
-                    //if (def.techLevel <= currentTechLevel)
-                    //    ++finishedCurrentAndPast;
-                    //else
-                    //    ++finishedFuture;
-                }
-                
+                    if (def.IsFinished)
+                    {
+                        ++finishedResearch;
+                        //if (def.techLevel <= currentTechLevel)
+                        //    ++finishedCurrentAndPast;
+                        //else
+                        //    ++finishedFuture;
+                    }
 
-                if (def.techLevel <= currentTechLevel)
-                {
-                    ++totalCurrentAndPast;
+
+                    if (def.techLevel <= currentTechLevel)
+                    {
+                        ++totalCurrentAndPast;
+                    }
                 }
-            }
-#if DEBUG
-            Log.Warning("Finished: " + countCurrentAndPreviousTechLevelFinished + " Next Tech Level Finished: " + countNextTechLevelFinished + " Total Techs: " + totalCurrentAndPreviousTechLevel);
-#endif
-            int neededTechsToAdvance = 0;
-            bool useStatisPerTier = Settings.StaticNumberResearchPerTier;
-            if (useStatisPerTier)
-            {
-                switch(Faction.OfPlayer.def.techLevel)
+
+                int neededTechsToAdvance = 0;
+                bool useStatisPerTier = Settings.StaticNumberResearchPerTier;
+                if (useStatisPerTier)
                 {
-                    case TechLevel.Neolithic:
-                        neededTechsToAdvance = Settings.NeolithicNeeded;
-                        break;
-                    case TechLevel.Medieval:
-                        neededTechsToAdvance = Settings.MedievalNeeded;
-                        break;
-                    case TechLevel.Industrial:
-                        neededTechsToAdvance = Settings.IndustrialNeeded;
-                        break;
-                    case TechLevel.Spacer:
-                        neededTechsToAdvance = Settings.SpacerNeeded;
-                        break;
+                    switch (Faction.OfPlayer.def.techLevel)
+                    {
+                        case TechLevel.Neolithic:
+                            neededTechsToAdvance = Settings.NeolithicNeeded;
+                            break;
+                        case TechLevel.Medieval:
+                            neededTechsToAdvance = Settings.MedievalNeeded;
+                            break;
+                        case TechLevel.Industrial:
+                            neededTechsToAdvance = Settings.IndustrialNeeded;
+                            break;
+                        case TechLevel.Spacer:
+                            neededTechsToAdvance = Settings.SpacerNeeded;
+                            break;
+                    }
                 }
-            }
 
 #if DEBUG
             Log.Warning("Current Tech Level: " + Faction.OfPlayer.def.techLevel);
@@ -111,23 +107,36 @@ namespace ChangeResearchSpeed
             Log.Warning("finishedResearch: " + finishedResearch);
 #endif
 
-            if ((useStatisPerTier && neededTechsToAdvance < finishedResearch) || 
-                (!useStatisPerTier && totalCurrentAndPast + 1 < finishedResearch))
-            {
-                if (Faction.OfPlayer.def.techLevel < TechLevel.Spacer)
+                if ((useStatisPerTier && neededTechsToAdvance < finishedResearch) ||
+                    (!useStatisPerTier && totalCurrentAndPast + 1 < finishedResearch))
                 {
-                    if (Scribe.mode == LoadSaveMode.Inactive)
+                    if (Faction.OfPlayer.def.techLevel < TechLevel.Spacer)
                     {
-                        // Only display this message is not loading
-                        Messages.Message("Advancing Tech Level from [" + currentTechLevel.ToString() + "] to [" + (currentTechLevel + 1).ToString() + "].", MessageTypeDefOf.PositiveEvent);
+                        if (Scribe.mode == LoadSaveMode.Inactive)
+                        {
+                            // Only display this message is not loading
+                            Messages.Message(
+                                "Advancing Tech Level from [" + currentTechLevel.ToString() + "] to [" + (currentTechLevel + 1).ToString() + "].",
+                                MessageTypeDefOf.PositiveEvent);
+                        }
+
+                        Faction.OfPlayer.def.techLevel = currentTechLevel + 1;
                     }
-                    Faction.OfPlayer.def.techLevel = currentTechLevel + 1;
+                }
+                else
+                {
+                    int needed = (useStatisPerTier) ? neededTechsToAdvance - finishedResearch : totalCurrentAndPast + 1 - finishedResearch;
+                    Log.Message("Tech Advance: Need to research [" + needed + "] more technologies");
                 }
             }
-            else
+            if (Settings.ChangeBaseCosts)
             {
-                int needed = (useStatisPerTier) ? neededTechsToAdvance - finishedResearch : totalCurrentAndPast + 1 - finishedResearch;
-                Log.Message("Tech Advance: Need to research [" + needed + "] more technologies");
+                foreach (var cost in Settings.ResearchBaseCosts)
+                {
+                    var techDef = ResearchTimeUtil.GetResearchDef(cost.Key);
+                    if (techDef != null)
+                        techDef.baseCost = cost.Value;
+                }
             }
         }
     }
