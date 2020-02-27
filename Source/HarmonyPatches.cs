@@ -1,4 +1,4 @@
-﻿using Harmony;
+﻿using HarmonyLib;
 using RimWorld;
 using System;
 using System.Reflection;
@@ -11,7 +11,7 @@ namespace ChangeResearchSpeed
     {
         static HarmonyPatches()
         {
-            var harmony = HarmonyInstance.Create("com.modifyresearchtime.rimworld.mod");
+            var harmony = new Harmony("com.modifyresearchtime.rimworld.mod");
             harmony.PatchAll(Assembly.GetExecutingAssembly());
 
             Log.Message(
