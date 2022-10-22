@@ -58,7 +58,7 @@ namespace ChangeResearchSpeed
 
             TechLevel currentTechLevel = Faction.OfPlayer.def.techLevel;
 #if DEBUG
-            Log.Warning("Tech Level: " + techLevel);
+//            Log.Warning("Tech Level: " + techLevel);
 #endif
             int totalCurrentAndPast = 0;
             int finishedResearch = 0;
@@ -81,7 +81,7 @@ namespace ChangeResearchSpeed
                 }
             }
 #if DEBUG
-            Log.Warning("Finished: " + countCurrentAndPreviousTechLevelFinished + " Next Tech Level Finished: " + countNextTechLevelFinished + " Total Techs: " + totalCurrentAndPreviousTechLevel);
+//            Log.Warning("Finished: " + countCurrentAndPreviousTechLevelFinished + " Next Tech Level Finished: " + countNextTechLevelFinished + " Total Techs: " + totalCurrentAndPreviousTechLevel);
 #endif
             int neededTechsToAdvance = 0;
             bool useStatisPerTier = Settings.StaticNumberResearchPerTier;
